@@ -23,7 +23,7 @@ import requests
 from data_gemma import base
 from data_gemma import utils
 
-_BASE_URL = 'https://{env}.datacommons.org/nodejs/query'
+_BASE_URL = '{base_url}/nodejs/query'
 
 _POINT_MODE = 'toolformer_rig'
 _TABLE_MODE = 'toolformer_rag'
@@ -43,12 +43,12 @@ class DataCommons:
       api_key: str,
       verbose: bool = True,
       num_threads: int = 1,
-      env: str = 'nl',
+      base_url: str = 'https://nl.datacommons.org',
       session: requests.Session | None = None,
   ):
     self.options = base.Options(verbose=verbose)
     self.num_threads = num_threads
-    self.env = env
+    self.base_url = base_url
     self.api_key = api_key
     if not session:
       session = requests.Session()
@@ -164,7 +164,7 @@ class DataCommons:
 
   def _call_api(self, query: str, extra_params: str) -> Any:
     query = query.strip().replace(' ', '+')
-    url = _BASE_URL.format(env=self.env) + f'?&q={query}&{extra_params}'
+    url = _BASE_URL.format(base_url=self.base_url) + f'?&q={query}&{extra_params}'
     if self.api_key:
       url = f'{url}&key={self.api_key}'
     # print(f'DC: Calling {url}')

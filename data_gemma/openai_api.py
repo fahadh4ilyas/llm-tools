@@ -31,6 +31,7 @@ class OpenAI(base.LLM):
       self,
       model: str,
       api_key: str,
+      base_url: str = 'https://api.openai.com/v1',
       verbose: bool = True,
       session: requests.Session | None = None,
   ):
@@ -39,6 +40,7 @@ class OpenAI(base.LLM):
       session = requests.Session()
     self.session: requests.Session = session
     self.options = base.Options(verbose=verbose)
+    self.base_url = base_url
     self.model = model
 
   def query(self, prompt: str) -> base.LLMCall:
@@ -86,7 +88,7 @@ class OpenAI(base.LLM):
         'Authorization': f'Bearer {self.key}',
     }
     r = self.session.post(
-        'https://api.openai.com/v1/chat/completions',
+        f'{self.base_url}/chat/completions',
         data=req_data,
         headers=header,
     )
